@@ -14,6 +14,7 @@
 # limitations under the License.
 import os
 import random
+import json
 from typing import List
 
 from evadb.constants import NO_GPU
@@ -37,7 +38,10 @@ class Context:
 
     def _populate_gpu_from_config(self) -> List:
         available_gpus = [i for i in range(get_gpu_count())]
-        return list(set(available_gpus) & set(self._user_provided_gpu_conf))
+        user_gpus = []
+        if isinstance(self._user_provided_gpu_conf, str):
+            user_gpus = json.loads(self._user_provided_gpu_conf)
+        return list(set(available_gpus) & set(user_gpus))
 
     def _populate_gpu_from_env(self) -> List:
         # Populate GPU IDs from env variable.
@@ -57,7 +61,10 @@ class Context:
             return []
         gpus = self._populate_gpu_from_config()
         if len(gpus) == 0:
+            print("populate_gpu_from_config: 0")
             gpus = self._populate_gpu_from_env()
+        else:
+            print("populate_gpu_from_config: ", gpus)
         return gpus
 
     def _select_random_gpu(self) -> str:
