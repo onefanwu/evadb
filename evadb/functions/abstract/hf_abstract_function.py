@@ -47,10 +47,15 @@ class AbstractHFFunction(AbstractFunction, GPUCompatible):
         super().__init__(*args, **kwargs)
         pipeline_args = self.default_pipeline_args
         for entry in function_obj.metadata:
-            if entry.value.isnumeric():
+            if isinstance(entry.value, str) and entry.value.isnumeric():
                 pipeline_args[entry.key] = int(entry.value)
             else:
+                # If it's not a string or not numeric, use the original value
                 pipeline_args[entry.key] = entry.value
+            # if entry.value.isnumeric():
+            #     pipeline_args[entry.key] = int(entry.value)
+            # else:
+            #     pipeline_args[entry.key] = entry.value
         self.pipeline_args = pipeline_args
         try_to_import_transformers()
         from transformers import pipeline

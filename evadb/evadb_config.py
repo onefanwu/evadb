@@ -42,3 +42,4 @@ BASE_EVADB_CONFIG = {
     "MILVUS_DB_NAME": "",
     "MILVUS_TOKEN": "",
 }
+
